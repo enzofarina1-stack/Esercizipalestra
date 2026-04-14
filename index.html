@@ -192,6 +192,38 @@
   /* Day title */
   .day-title { font-size: 17px; font-weight: 700; margin-bottom: 4px; }
   .day-sub { font-size: 13px; color: var(--text3); margin-bottom: 16px; }
+
+  /* Day nav with dots */
+  .day-btn-wrap { flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 5px; cursor: pointer; }
+  .day-btn { width: 100%; }
+  .day-dots { display: flex; gap: 3px; justify-content: center; }
+  .day-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border2); transition: background .2s; }
+  .day-dot.done { background: var(--accent); }
+  .day-dot.today { background: var(--green-text); }
+
+  /* Progress banner */
+  .prog-banner { background: var(--card); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 14px 16px; margin-bottom: 14px; display: flex; align-items: center; gap: 14px; }
+  .prog-banner-icon { font-size: 28px; flex-shrink: 0; }
+  .prog-banner-body { flex: 1; min-width: 0; }
+  .prog-banner-week { font-size: 16px; font-weight: 700; line-height: 1.2; }
+  .prog-banner-detail { font-size: 12px; color: var(--text3); margin-top: 3px; }
+  .prog-banner-bar-wrap { margin-top: 8px; background: var(--card2); border-radius: 4px; height: 6px; overflow: hidden; }
+  .prog-banner-bar { height: 100%; background: var(--accent); border-radius: 4px; transition: width .4s; }
+
+  /* Complete button */
+  .complete-section { margin-top: 24px; padding: 16px; background: var(--card); border: 1px solid var(--border); border-radius: var(--r-lg); }
+  .complete-btn { width: 100%; padding: 14px; background: var(--green-text); color: white; border: none; border-radius: var(--r-md); font-size: 16px; font-weight: 700; cursor: pointer; transition: opacity .15s; letter-spacing: -0.2px; }
+  .complete-btn:active { opacity: .8; }
+  .complete-btn.already { background: var(--card2); color: var(--green-text); border: 1.5px solid var(--green-text); }
+  .complete-btn.undo { background: transparent; color: var(--text3); border: 1.5px solid var(--border2); font-size: 13px; margin-top: 8px; padding: 8px; }
+  .complete-hint { font-size: 12px; color: var(--text3); margin-top: 8px; line-height: 1.5; }
+  .complete-history-title { font-size: 10px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: .06em; margin: 14px 0 8px; }
+  .complete-history { display: flex; flex-direction: column; gap: 6px; }
+  .hist-row { display: flex; align-items: center; justify-content: space-between; font-size: 13px; padding: 6px 0; border-bottom: 1px solid var(--border); }
+  .hist-row:last-child { border-bottom: none; }
+  .hist-week { font-weight: 700; color: var(--accent); min-width: 64px; }
+  .hist-date { color: var(--text2); }
+  .hist-ago { color: var(--text3); font-size: 12px; }
 </style>
 </head>
 <body>
@@ -730,14 +762,205 @@ function renderExercise(ex, di, ei) {
   </div>`;
 }
 
+// ── Session tracker ────────────────────────────────────────────
+const MAX_WEEKS = 8;
+
+function getSessions(di) {
+  try { return JSON.parse(localStorage.getItem('fv_sessions_d' + di)) || []; }
+  catch { return []; }
+}
+
+function todayISO() {
+  return new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+}
+
+function alreadyDoneToday(di) {
+  return getSessions(di).includes(todayISO());
+}
+
+function addSession(di) {
+  const sessions = getSessions(di);
+  const today = todayISO();
+  if (sessions.includes(today)) return; // no duplicates
+  if (sessions.length >= MAX_WEEKS) return; // max 8 settimane
+  sessions.push(today);
+  localStorage.setItem('fv_sessions_d' + di, JSON.stringify(sessions));
+}
+
+function removeLastSession(di) {
+  const sessions = getSessions(di);
+  const today = todayISO();
+  const idx = sessions.lastIndexOf(today);
+  if (idx !== -1) sessions.splice(idx, 1);
+  localStorage.setItem('fv_sessions_d' + di, JSON.stringify(sessions));
+}
+
+function currentWeekLabel(di) {
+  const n = getSessions(di).length;
+  if (n === 0) return null;
+  // Map session count to week pair: 1-2 = W1, 3-4 = W2 etc. (each pair of sessions = 1 week pair block)
+  const wk = Math.ceil(n / 2);
+  const clamp = Math.min(wk, 4);
+  return ['W1–2','W3–4','W5–6','W7–8'][clamp - 1];
+}
+
+function formatDate(isoStr) {
+  const d = new Date(isoStr + 'T12:00:00');
+  return d.toLocaleDateString('it-IT', { weekday: 'short', day: 'numeric', month: 'short' });
+}
+
+function daysAgo(isoStr) {
+  const diff = Math.round((new Date(todayISO()) - new Date(isoStr)) / 86400000);
+  if (diff === 0) return 'oggi';
+  if (diff === 1) return 'ieri';
+  return diff + ' giorni fa';
+}
+
+function weekLabelForIndex(n) {
+  // n = 1-indexed session number
+  const wk = Math.ceil(n / 2);
+  return ['W1–2','W3–4','W5–6','W7–8'][Math.min(wk,4) - 1];
+}
+
+function totalSessions() {
+  return DAYS.reduce((s, _, i) => s + getSessions(i).length, 0);
+}
+
+function totalDone() {
+  // total possible = 4 days * 8 weeks = 32
+  return totalSessions();
+}
+
+function globalWeekLabel() {
+  const total = totalSessions();
+  if (total === 0) return null;
+  const wk = Math.ceil(total / 4); // ogni 4 sessioni (1 per giorno) = 1 settimana
+  return Math.min(wk, 8);
+}
+
+function lastSessionInfo() {
+  let last = null, lastDay = null;
+  DAYS.forEach((d, i) => {
+    const ss = getSessions(i);
+    if (ss.length) {
+      const latest = ss[ss.length - 1];
+      if (!last || latest > last) { last = latest; lastDay = i; }
+    }
+  });
+  if (!last) return null;
+  return { date: last, day: lastDay, dayName: DAYS[lastDay].name };
+}
+
+function renderProgressBanner() {
+  const wk = globalWeekLabel();
+  const last = lastSessionInfo();
+  const done = totalDone();
+  const pct = Math.round((done / 32) * 100);
+
+  if (!wk && !last) {
+    return `<div class="prog-banner">
+      <div class="prog-banner-icon">🏁</div>
+      <div class="prog-banner-body">
+        <div class="prog-banner-week">Nessuna sessione registrata</div>
+        <div class="prog-banner-detail">Segna il completamento dopo ogni allenamento</div>
+        <div class="prog-banner-bar-wrap"><div class="prog-banner-bar" style="width:0%"></div></div>
+      </div>
+    </div>`;
+  }
+
+  const WEEK_LABELS = ['W1–2 — Tensione meccanica','W3–4 — Intensificazione','W5–6 — Stress metabolico','W7–8 — Densità alta'];
+  const wkLabel = WEEK_LABELS[Math.min(wk, 4) - 1];
+  const lastText = last ? `Ultima sessione: ${last.dayName} · ${daysAgo(last.date)}` : '';
+
+  return `<div class="prog-banner">
+    <div class="prog-banner-icon">${pct >= 100 ? '🏆' : '📅'}</div>
+    <div class="prog-banner-body">
+      <div class="prog-banner-week">Settimana ${wk} · ${done}/32 sessioni</div>
+      <div class="prog-banner-detail">${wkLabel}</div>
+      ${last ? `<div class="prog-banner-detail" style="margin-top:2px">${lastText}</div>` : ''}
+      <div class="prog-banner-bar-wrap"><div class="prog-banner-bar" style="width:${pct}%"></div></div>
+    </div>
+  </div>`;
+}
+
+function renderCompleteSection(di) {
+  const sessions = getSessions(di);
+  const n = sessions.length;
+  const doneToday = alreadyDoneToday(di);
+  const full = n >= MAX_WEEKS;
+
+  let btnHTML = '';
+  if (full) {
+    btnHTML = `
+      <button class="complete-btn already" disabled>🏆 Completato — 8 settimane su 8!</button>`;
+  } else if (doneToday) {
+    btnHTML = `
+      <button class="complete-btn already" disabled>✓ Segnato oggi — Sessione ${n}/8 (${weekLabelForIndex(n)})</button>
+      <div class="complete-hint">La prossima volta che farai questo allenamento, il pulsante verde riapparirà automaticamente.</div>
+      <button class="complete-btn undo" onclick="undoComplete(${di})">↩ Annulla questa registrazione</button>`;
+  } else {
+    const nextLabel = n === 0 ? 'Sessione 1 di 8 — W1–2' : `Sessione ${n+1} di 8 — ${weekLabelForIndex(n+1)}`;
+    btnHTML = `
+      <button class="complete-btn" onclick="markComplete(${di})">✓ Segna allenamento completato</button>
+      <div class="complete-hint">Premi dopo ogni volta che fai questo allenamento. Il pulsante riappare ogni nuovo giorno. → <strong>${nextLabel}</strong></div>`;
+  }
+
+  let histHTML = '';
+  if (n > 0) {
+    histHTML = `<div class="complete-history-title">Storico sessioni</div>
+      <div class="complete-history">
+        ${sessions.slice().reverse().map((s, ri) => {
+          const idx = n - ri; // session number (1-based)
+          return `<div class="hist-row">
+            <span class="hist-week">${weekLabelForIndex(idx)}</span>
+            <span class="hist-date">${formatDate(s)}</span>
+            <span class="hist-ago">${daysAgo(s)}</span>
+          </div>`;
+        }).join('')}
+      </div>`;
+  }
+
+  return `<div class="complete-section">
+    ${btnHTML}
+    ${histHTML}
+  </div>`;
+}
+
+function markComplete(di) {
+  addSession(di);
+  renderDay(di);
+  renderNav();
+}
+
+function undoComplete(di) {
+  removeLastSession(di);
+  renderDay(di);
+  renderNav();
+}
+
+function renderDots(di) {
+  const n = getSessions(di).length;
+  const doneToday = alreadyDoneToday(di);
+  return Array.from({length: MAX_WEEKS}, (_, i) => {
+    let cls = 'day-dot';
+    if (i < n) {
+      // last dot filled today gets "today" colour
+      cls += (i === n - 1 && doneToday) ? ' today' : ' done';
+    }
+    return `<div class="${cls}"></div>`;
+  }).join('');
+}
+
 function renderDay(di) {
   activeDay = di;
   document.querySelectorAll('.day-btn').forEach((b,j) => b.classList.toggle('active', j===di));
   const day = DAYS[di];
-  let html = renderWeekStrip();
+  let html = renderProgressBanner();
+  html += renderWeekStrip();
   html += `<div class="day-title">${day.name}</div><div class="day-sub">${day.full}</div>`;
   html += `<div class="sec">Esercizi</div>`;
   day.exercises.forEach((ex, ei) => { html += renderExercise(ex, di, ei); });
+  html += renderCompleteSection(di);
   html += `<div class="sec" style="margin-top:24px">Glossario</div>
     <div class="glossary">
       <div class="gl-row"><span class="gl-term">TUT</span><span class="gl-def">Eccentrica–Isometria–Concentrica in secondi. Es: 3-1-1 = 3" discesa / 1" pausa / 1" salita</span></div>
@@ -754,7 +977,11 @@ function renderDay(di) {
 
 function renderNav() {
   const nav = document.getElementById('day-nav');
-  nav.innerHTML = DAYS.map((d,i) => `<button class="day-btn${i===0?' active':''}" onclick="renderDay(${i})">${d.name}</button>`).join('');
+  nav.innerHTML = DAYS.map((d,i) => `
+    <div class="day-btn-wrap" onclick="renderDay(${i})">
+      <button class="day-btn${i===activeDay?' active':''}">${d.name}</button>
+      <div class="day-dots">${renderDots(i)}</div>
+    </div>`).join('');
 }
 
 // ── Installazione come App ──────────────────────────────────────
