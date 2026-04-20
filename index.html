@@ -179,6 +179,13 @@
   /* Buttons row */
   .btn-row { margin-top: 12px; display: flex; flex-direction: column; gap: 8px; }
 
+  /* Superset / Giant Set — palestra occupata */
+  .gs-tip-box { background: var(--purple-bg); border-radius: var(--r-sm); padding: 10px 12px; margin-bottom: 12px; }
+  .gs-tip-header { font-size: 10px; font-weight: 700; color: var(--purple-text); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 8px; }
+  .gs-tip-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .gs-tip-list li { font-size: 13px; color: var(--text2); line-height: 1.5; padding-left: 16px; position: relative; }
+  .gs-tip-list li::before { content: "→"; position: absolute; left: 0; color: var(--purple-text); font-weight: 700; }
+
   /* Badge */
   .badge-gs { font-size: 10px; font-weight: 700; background: var(--purple-bg); color: var(--purple-text); padding: 2px 7px; border-radius: 20px; margin-left: 6px; vertical-align: middle; }
 
@@ -219,11 +226,12 @@
   .complete-hint { font-size: 12px; color: var(--text3); margin-top: 8px; line-height: 1.5; }
   .complete-history-title { font-size: 10px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: .06em; margin: 14px 0 8px; }
   .complete-history { display: flex; flex-direction: column; gap: 6px; }
-  .hist-row { display: flex; align-items: center; justify-content: space-between; font-size: 13px; padding: 6px 0; border-bottom: 1px solid var(--border); }
+  .hist-row { display: flex; align-items: center; justify-content: space-between; font-size: 13px; padding: 6px 0; border-bottom: 1px solid var(--border); gap: 6px; }
   .hist-row:last-child { border-bottom: none; }
-  .hist-week { font-weight: 700; color: var(--accent); min-width: 64px; }
-  .hist-date { color: var(--text2); }
-  .hist-ago { color: var(--text3); font-size: 12px; }
+  .hist-week { font-weight: 700; color: var(--accent); min-width: 56px; }
+  .hist-date { color: var(--text2); flex: 1; }
+  .hist-ago { color: var(--text3); font-size: 12px; white-space: nowrap; }
+  .hist-del { background: none; border: none; font-size: 15px; cursor: pointer; padding: 0 4px; color: var(--text3); flex-shrink: 0; }
 </style>
 </head>
 <body>
@@ -272,6 +280,7 @@ const DAYS = [
         prog:[["W1–2","4 set, TUT 3-1-1, RIR 2"],["W3–4","4 set, RIR 1"],["W5–6","Rest-Pause: quasi al cedimento, 15\" pausa, riparti"],["W7–8","Rest-Pause continuo, densità massima"]]},
       {num:"2A", name:"Pec Fly (Superset →)", summary:"3×10-12 | TUT 3-1-2", sets:"3×10-12", tut:["3","1","2"], rest:"→ subito 2B", yt:"pec deck fly machine",
         note:"Superset con Crossover basso: nessun recupero tra 2A e 2B. Recupera 60\" solo dopo il crossover.",
+        gsTip:["Se il Pec Deck è occupato: fai prima il Crossover basso da solo (3×12-15) poi Fly manubri (3×10-12) con 60\" di recupero tra i set","In alternativa sostituisci il superset con 4 set di Fly manubri con TUT 3-1-2 e RIR invariato","Il beneficio del superset è il pompaggio continuo: se non puoi farlo, rallenta l eccentrica a 4\" per compensare"],
         alt:{name:"Fly manubri su panca piana", yt:"dumbbell fly chest pec"},
         tips:[
           "Mantieni una leggera flessione ai gomiti per tutto il movimento: non bloccarli mai",
@@ -366,6 +375,7 @@ const DAYS = [
         prog:[["W1–2","3 set, RIR 2"],["W3–4","RIR 1"],["W5–8","Intensità progressiva"]]},
       {num:"3A", name:"Pressa orizzontale (Superset →)", summary:"3×10-12 | TUT 3-1-1", sets:"3×10-12", tut:["3","1","1"], rest:"→ subito 3B", yt:"horizontal leg press machine",
         note:"Superset con Leg Extension. Isometria 2\" W3-6. Drop Set W7-8. Back-Off W3-4.",
+        gsTip:["Se la Pressa orizzontale è occupata: fai solo Leg Extension (4×12-15) con RIR invariato e TUT 3-1-2","In alternativa usa la Pressa 45° già fatta in precedenza come alternativa alla pressa orizzontale e abbinala comunque alla Leg Extension","Se entrambe sono occupate: Bulgarian Split Squat (3×10 per gamba) + Sissy Squat (3×12) hanno lo stesso effetto sul quadricipite"],
         alt:{name:"Bulgarian Split Squat", yt:"bulgarian split squat technique"},
         tips:[
           "Piedi al centro o nella parte bassa della pedana per isolare i quadricipiti",
@@ -477,6 +487,7 @@ const DAYS = [
         prog:[["W1–6","3 set, esecuzione controllata"],["W7–8","Drop Set finale"]]},
       {num:"5A", name:"Lat machine presa stretta (Superset →)", summary:"3×12 | TUT 2-1-2", sets:"3×12", tut:["2","1","2"], rest:"→ subito 5B", yt:"lat pulldown close grip",
         note:"Superset con Face pull: nessun recupero tra 5A e 5B. Recupera 75-90\" solo dopo il Face pull.",
+        gsTip:["Il Face pull (5B) si fa sempre con il cavo: non occupa mai la lat machine, quindi questo superset e quasi sempre fattibile","Se la lat machine e occupata: fai Pullover (manubri o cavo) + Face pull come superset alternativo","Se proprio non riesci: fai Face pull da solo (4×15) con 45\" di recupero tra i set, e la lat machine quando si libera"],
         alt:{name:"Neutral Grip Pull Up", yt:"neutral grip pull up technique"},
         tips:[
           "La presa stretta isola il dorsale basso e centrale rispetto alla presa larga",
@@ -559,16 +570,37 @@ const DAYS = [
           "Discesa controllata 3\": porta il peso fino alla posizione di partenza"
         ],
         prog:[["W1–2","4 set, RIR 2"],["W3–4","RIR 1, carico aumentato"],["W5–6","RIR 0–1"],["W7–8","Massima intensità"]]},
-      {num:"2", name:"Giant Set spalle", summary:"4→6 giri | 3 esercizi", sets:"4–6 giri", tut:["2","1","2"], rest:'90–120" dopo ogni giro', yt:"lateral raise giant set shoulders", gs:true,
-        note:"3 esercizi senza recupero: Alzate laterali machine (15) → Alzate laterali manubri (12) → Rear delts cavi (15). Recupera 90-120\" solo dopo il giro completo.",
-        alt:{name:"Superset Alzate manubri + Rear Delt fly", yt:"shoulder superset dumbbell lateral raise rear delt"},
+      {num:"2A", name:"Alzate laterali machine (Giant Set →)", summary:"4–6×15 | TUT 2-1-2", sets:"4–6×15", tut:["2","1","2"], rest:"→ subito 2B", yt:"lateral raise machine nautilus", gs:true,
+        note:"Giant Set con 2B e 2C: nessun recupero tra i 3 esercizi. Recupera 90-120\" solo dopo aver fatto tutti e 3. Prepara tutto in anticipo.",
+        gsTip:["Se la machine Nautilus e occupata: inizia direttamente da 2B (Alzate manubri) e fai un superset 2B+2C invece del giant set completo","In alternativa: fai un Triple Drop Set sulle Alzate manubri (peso normale 15 reps → -30% 12 reps → -30% ancora 10 reps) che ha lo stesso effetto metabolico","Preparati in anticipo: tieni i manubri vicini e il cavo gia impostato prima di iniziare il giro"],
+        alt:{name:"Alzate laterali manubri (in piedi)", yt:"dumbbell lateral raise technique"},
         tips:[
-          "Sequenza senza recupero: Alzate machine, Alzate manubri, Rear delts cavi",
-          "Cambia esercizio in massimo 10\": prepara tutto prima di iniziare il giro",
-          "Usa un peso che ti permetta tecnica pulita su tutti e 3 gli esercizi",
-          "Il recupero avviene solo dopo il giro completo dei 3 esercizi: poi ricomincia"
+          "Primo esercizio del Giant Set: allinea il fulcro della macchina con la spalla",
+          "Porta le braccia fino all orizzontale, non oltre: protegge il sovraspinato",
+          "Usa un peso leggermente piu leggero del solito: dovrai fare altri 2 esercizi subito dopo",
+          "Vai subito a 2B senza recupero"
         ],
-        prog:[["W1–2","4 giri totali"],["W3–4","5 giri totali"],["W5–6","6 giri + Rest-Pause sulle Alzate manubri"],["W7–8","6 giri + Drop Set sulle Alzate manubri"]]},
+        prog:[["W1–2","4 giri totali"],["W3–4","5 giri totali"],["W5–6","6 giri + Rest-Pause"],["W7–8","6 giri + Drop Set"]]},
+      {num:"2B", name:"Alzate laterali manubri (Giant Set →)", summary:"4–6×12 | TUT 2-1-2", sets:"4–6×12", tut:["2","1","2"], rest:"→ subito 2C", yt:"dumbbell lateral raise technique", gs:true,
+        note:"Secondo esercizio del Giant Set. Nessun recupero: vai subito a 2C (Rear delts cavi).",
+        alt:{name:"Alzate laterali cavo singolo", yt:"single arm cable lateral raise"},
+        tips:[
+          "Il pollice leggermente piu basso del mignolo (come versare una bottiglia)",
+          "Non dondolare il busto: tieni il core attivo e schiena neutra",
+          "Gomiti con leggera flessione fissa, non cambiarla durante il movimento",
+          "Vai subito a 2C senza recupero"
+        ],
+        prog:[["W1–2","4 giri totali"],["W3–4","5 giri totali"],["W5–6","6 giri + Rest-Pause"],["W7–8","6 giri + Drop Set"]]},
+      {num:"2C", name:"Rear delts cavi (Giant Set)", summary:"4–6×15 | TUT 2-1-2", sets:"4–6×15", tut:["2","1","2"], rest:'90–120" dopo il giro completo', yt:"cable rear delt fly technique", gs:true,
+        note:"Terzo esercizio del Giant Set. Dopo questo recupera 90-120\", poi ricomincia da 2A.",
+        alt:{name:"Rear delt fly manubri su panca inclinata", yt:"incline dumbbell rear delt fly"},
+        tips:[
+          "Usa i cavi incrociati (cavo sinistro con mano destra e viceversa)",
+          "Busto leggermente inclinato in avanti, gomiti a 90° aperti lateralmente",
+          "Senti la contrazione del deltoide posteriore al picco: tieni 1\"",
+          "Dopo questo esercizio: recupero 90-120\" poi ricomincia da 2A"
+        ],
+        prog:[["W1–2","4 giri totali"],["W3–4","5 giri totali"],["W5–6","6 giri + Rest-Pause"],["W7–8","6 giri + Drop Set"]]},
       {num:"3", name:"Hip Thrust", summary:"3×10 | TUT 2-2-1", sets:"3×10", tut:["2","2","1"], rest:'90–120"', yt:"hip thrust barbell technique",
         note:"TUT speciale: 2\" isometria al picco. Contrai i glutei nel punto alto 2\" prima di scendere.",
         alt:{name:"Glute Bridge con bilanciere", yt:"barbell glute bridge technique"},
@@ -713,6 +745,12 @@ function renderExercise(ex, di, ei) {
       <button class="yt-btn" onclick="yt('${ex.alt.yt}')"><span class="yt-icon">▶</span> Video alternativa</button>
     </div>` : '';
 
+  const gsTipHTML = ex.gsTip ? `
+    <div class="gs-tip-box">
+      <div class="gs-tip-header">🏋 Superset/Giant Set non fattibile? Cosa fare</div>
+      <ul class="gs-tip-list">${ex.gsTip.map(t => `<li>${t}</li>`).join('')}</ul>
+    </div>` : '';
+
   const tipsHTML = ex.tips ? `
     <div class="tips-box">
       <div class="tips-header">💡 Suggerimenti tecnici</div>
@@ -744,6 +782,7 @@ function renderExercise(ex, di, ei) {
       </div>
       ${ex.note ? `<div class="note">${ex.note}</div>` : ''}
       ${altHTML}
+      ${gsTipHTML}
       ${tipsHTML}
       <div class="prog-title">Progressione settimanale</div>
       <div>${ex.prog.map(([w,d]) => `<div class="prog-row"><span class="prog-weeks">${w}</span><span class="prog-desc">${d}</span></div>`).join('')}</div>
@@ -781,17 +820,14 @@ function alreadyDoneToday(di) {
 function addSession(di) {
   const sessions = getSessions(di);
   const today = todayISO();
-  if (sessions.includes(today)) return; // no duplicates
-  if (sessions.length >= MAX_WEEKS) return; // max 8 settimane
+  if (sessions.includes(today)) return; // no duplicates same day
   sessions.push(today);
   localStorage.setItem('fv_sessions_d' + di, JSON.stringify(sessions));
 }
 
-function removeLastSession(di) {
+function removeSession(di, idx) {
   const sessions = getSessions(di);
-  const today = todayISO();
-  const idx = sessions.lastIndexOf(today);
-  if (idx !== -1) sessions.splice(idx, 1);
+  sessions.splice(idx, 1);
   localStorage.setItem('fv_sessions_d' + di, JSON.stringify(sessions));
 }
 
@@ -817,9 +853,14 @@ function daysAgo(isoStr) {
 }
 
 function weekLabelForIndex(n) {
-  // n = 1-indexed session number
-  const wk = Math.ceil(n / 2);
-  return ['W1–2','W3–4','W5–6','W7–8'][Math.min(wk,4) - 1];
+  // n = 1-indexed session number, cycles every 8
+  const pos = ((n - 1) % MAX_WEEKS) + 1;
+  const wk = Math.ceil(pos / 2);
+  return ['W1–2','W3–4','W5–6','W7–8'][wk - 1];
+}
+
+function cycleNum(n) {
+  return Math.ceil(n / MAX_WEEKS);
 }
 
 function totalSessions() {
@@ -834,8 +875,8 @@ function totalDone() {
 function globalWeekLabel() {
   const total = totalSessions();
   if (total === 0) return null;
-  const wk = Math.ceil(total / 4); // ogni 4 sessioni (1 per giorno) = 1 settimana
-  return Math.min(wk, 8);
+  const wk = Math.ceil(total / 4);
+  return wk; // no clamp: shows real week number
 }
 
 function lastSessionInfo() {
@@ -868,17 +909,19 @@ function renderProgressBanner() {
     </div>`;
   }
 
+  const wkDisplay = wk > 8 ? `Settimana ${wk} (ciclo ${Math.ceil(wk/8)})` : `Settimana ${wk}`;
   const WEEK_LABELS = ['W1–2 — Tensione meccanica','W3–4 — Intensificazione','W5–6 — Stress metabolico','W7–8 — Densità alta'];
-  const wkLabel = WEEK_LABELS[Math.min(wk, 4) - 1];
+  const wkLabel = WEEK_LABELS[(Math.ceil(((wk-1)%8+1)/2)) - 1];
+  const pctDisplay = wk > 8 ? Math.round(((done % 32) / 32) * 100) : pct;
   const lastText = last ? `Ultima sessione: ${last.dayName} · ${daysAgo(last.date)}` : '';
 
   return `<div class="prog-banner">
-    <div class="prog-banner-icon">${pct >= 100 ? '🏆' : '📅'}</div>
+    <div class="prog-banner-icon">${pct >= 100 && wk <= 8 ? '🏆' : '📅'}</div>
     <div class="prog-banner-body">
-      <div class="prog-banner-week">Settimana ${wk} · ${done}/32 sessioni</div>
+      <div class="prog-banner-week">${wkDisplay} · ${done} sessioni totali</div>
       <div class="prog-banner-detail">${wkLabel}</div>
       ${last ? `<div class="prog-banner-detail" style="margin-top:2px">${lastText}</div>` : ''}
-      <div class="prog-banner-bar-wrap"><div class="prog-banner-bar" style="width:${pct}%"></div></div>
+      <div class="prog-banner-bar-wrap"><div class="prog-banner-bar" style="width:${pctDisplay}%"></div></div>
     </div>
   </div>`;
 }
@@ -887,34 +930,31 @@ function renderCompleteSection(di) {
   const sessions = getSessions(di);
   const n = sessions.length;
   const doneToday = alreadyDoneToday(di);
-  const full = n >= MAX_WEEKS;
 
   let btnHTML = '';
-  if (full) {
+  if (doneToday) {
     btnHTML = `
-      <button class="complete-btn already" disabled>🏆 Completato — 8 settimane su 8!</button>`;
-  } else if (doneToday) {
-    btnHTML = `
-      <button class="complete-btn already" disabled>✓ Segnato oggi — Sessione ${n}/8 (${weekLabelForIndex(n)})</button>
-      <div class="complete-hint">La prossima volta che farai questo allenamento, il pulsante verde riapparirà automaticamente.</div>
-      <button class="complete-btn undo" onclick="undoComplete(${di})">↩ Annulla questa registrazione</button>`;
+      <button class="complete-btn already" disabled>✓ Segnato oggi — Sessione ${n} (${weekLabelForIndex(n)})</button>
+      <div class="complete-hint">La prossima volta che farai questo allenamento, il pulsante verde riapparirà automaticamente.</div>`;
   } else {
-    const nextLabel = n === 0 ? 'Sessione 1 di 8 — W1–2' : `Sessione ${n+1} di 8 — ${weekLabelForIndex(n+1)}`;
+    const nextLabel = `Sessione ${n+1} — ${weekLabelForIndex(n+1)}`;
     btnHTML = `
       <button class="complete-btn" onclick="markComplete(${di})">✓ Segna allenamento completato</button>
-      <div class="complete-hint">Premi dopo ogni volta che fai questo allenamento. Il pulsante riappare ogni nuovo giorno. → <strong>${nextLabel}</strong></div>`;
+      <div class="complete-hint">Prossima: <strong>${nextLabel}</strong>. Il pulsante riappare ogni nuovo giorno, per sempre.</div>`;
   }
 
   let histHTML = '';
   if (n > 0) {
-    histHTML = `<div class="complete-history-title">Storico sessioni</div>
+    histHTML = `<div class="complete-history-title">Storico sessioni — tocca 🗑 per rimuovere</div>
       <div class="complete-history">
         ${sessions.slice().reverse().map((s, ri) => {
-          const idx = n - ri; // session number (1-based)
+          const realIdx = n - 1 - ri; // 0-based index in array
+          const sessionNum = n - ri;  // 1-based display
           return `<div class="hist-row">
-            <span class="hist-week">${weekLabelForIndex(idx)}</span>
+            <span class="hist-week">${weekLabelForIndex(sessionNum)}</span>
             <span class="hist-date">${formatDate(s)}</span>
             <span class="hist-ago">${daysAgo(s)}</span>
+            <button class="hist-del" onclick="removeSessionUI(${di},${realIdx})" title="Rimuovi">🗑</button>
           </div>`;
         }).join('')}
       </div>`;
@@ -932,8 +972,8 @@ function markComplete(di) {
   renderNav();
 }
 
-function undoComplete(di) {
-  removeLastSession(di);
+function removeSessionUI(di, idx) {
+  removeSession(di, idx);
   renderDay(di);
   renderNav();
 }
@@ -941,11 +981,14 @@ function undoComplete(di) {
 function renderDots(di) {
   const n = getSessions(di).length;
   const doneToday = alreadyDoneToday(di);
+  const pos = n % MAX_WEEKS; // position in current cycle (0-7)
   return Array.from({length: MAX_WEEKS}, (_, i) => {
     let cls = 'day-dot';
-    if (i < n) {
-      // last dot filled today gets "today" colour
-      cls += (i === n - 1 && doneToday) ? ' today' : ' done';
+    if (n >= MAX_WEEKS) {
+      // completed at least one full cycle: all dots orange except current position
+      cls += i < pos ? ' today' : (i === pos && doneToday ? ' today' : ' done');
+    } else {
+      if (i < n) cls += (i === n - 1 && doneToday) ? ' today' : ' done';
     }
     return `<div class="${cls}"></div>`;
   }).join('');
