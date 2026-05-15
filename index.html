@@ -224,6 +224,11 @@
   .complete-btn.already { background: var(--card2); color: var(--green-text); border: 1.5px solid var(--green-text); }
   .complete-btn.undo { background: transparent; color: var(--text3); border: 1.5px solid var(--border2); font-size: 13px; margin-top: 8px; padding: 8px; }
   .complete-hint { font-size: 12px; color: var(--text3); margin-top: 8px; line-height: 1.5; }
+  .complete-date-row { display: flex; align-items: center; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+  .complete-date-label { font-size: 12px; color: var(--text3); white-space: nowrap; }
+  .complete-date-input { flex: 1; min-width: 130px; height: 36px; border: 1.5px solid var(--border2); border-radius: var(--r-sm); background: var(--card); color: var(--text); font-size: 14px; padding: 0 10px; outline: none; }
+  .complete-date-input:focus { border-color: var(--accent); }
+  .hist-date-edit { font-size: 12px; background: none; border: none; color: var(--blue-text); cursor: pointer; padding: 0 2px; text-decoration: underline; }
   .complete-history-title { font-size: 10px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: .06em; margin: 14px 0 8px; }
   .complete-history { display: flex; flex-direction: column; gap: 6px; }
   .hist-row { display: flex; align-items: center; justify-content: space-between; font-size: 13px; padding: 6px 0; border-bottom: 1px solid var(--border); gap: 6px; }
@@ -232,6 +237,41 @@
   .hist-date { color: var(--text2); flex: 1; }
   .hist-ago { color: var(--text3); font-size: 12px; white-space: nowrap; }
   .hist-del { background: none; border: none; font-size: 15px; cursor: pointer; padding: 0 4px; color: var(--text3); flex-shrink: 0; }
+
+  /* Week spotlight — questa settimana */
+  .wk-spotlight { border-radius: var(--r-sm); padding: 12px 14px; margin-bottom: 12px; border: 1.5px solid var(--border); background: var(--card2); }
+  .wk-spot-panel { }
+  .wk-spot-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .wk-spot-title { font-size: 10px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: .06em; }
+  .wk-spot-stat-row { display: flex; gap: 16px; margin-bottom: 8px; flex-wrap: wrap; }
+  .wk-spot-stat { font-size: 13px; font-weight: 600; color: var(--text); }
+  .wk-spot-stat span { color: var(--text3); font-weight: 400; margin-right: 4px; font-size: 12px; }
+  .wk-spot-tech { font-size: 13px; color: var(--text2); line-height: 1.55; }
+
+  /* Visual schemas */
+  .schema-wrap { margin-top: 10px; }
+  .schema-row { display: flex; align-items: center; gap: 5px; overflow-x: auto; padding: 4px 0; scrollbar-width: none; }
+  .schema-row::-webkit-scrollbar { display: none; }
+  .schema-set { background: var(--card); border: 1.5px solid var(--border2); border-radius: var(--r-sm); padding: 6px 7px; text-align: center; min-width: 48px; flex-shrink: 0; }
+  .schema-set-label { font-size: 9px; color: var(--text3); font-weight: 600; text-transform: uppercase; }
+  .schema-set-val { font-size: 11px; font-weight: 700; color: var(--text); margin-top: 2px; }
+  .schema-arrow { font-size: 12px; color: var(--border2); flex-shrink: 0; }
+  .schema-bo { background: var(--accent-bg); border: 1.5px solid var(--accent); border-radius: var(--r-sm); padding: 6px 8px; text-align: center; min-width: 68px; flex-shrink: 0; }
+  .schema-bo-label { font-size: 9px; color: var(--accent-text); font-weight: 700; text-transform: uppercase; }
+  .schema-bo-val { font-size: 11px; font-weight: 700; color: var(--accent-text); margin-top: 2px; }
+  .schema-pause { background: var(--red-bg); border: 1.5px solid var(--red-text); border-radius: var(--r-sm); padding: 6px 8px; text-align: center; min-width: 42px; flex-shrink: 0; }
+  .schema-pause-label { font-size: 9px; color: var(--red-text); font-weight: 700; }
+  .schema-pause-val { font-size: 14px; font-weight: 700; color: var(--red-text); }
+  .schema-drop { background: var(--purple-bg); border: 1.5px solid var(--purple-text); border-radius: var(--r-sm); padding: 6px 8px; text-align: center; min-width: 56px; flex-shrink: 0; }
+  .schema-drop-label { font-size: 9px; color: var(--purple-text); font-weight: 700; text-transform: uppercase; }
+  .schema-drop-val { font-size: 11px; font-weight: 700; color: var(--purple-text); margin-top: 2px; }
+
+  /* Giant Set alternative */
+  .gsalt-box { background: var(--blue-bg); border-radius: var(--r-sm); padding: 10px 12px; margin-bottom: 12px; border: 1px solid var(--blue-text); }
+  .gsalt-header { font-size: 10px; font-weight: 700; color: var(--blue-text); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 6px; }
+  .gsalt-name { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+  .gsalt-meta { font-size: 12px; color: var(--blue-text); font-weight: 600; margin-bottom: 6px; }
+  .gsalt-note { font-size: 12px; color: var(--text2); line-height: 1.55; margin-bottom: 8px; }
 </style>
 </head>
 <body>
@@ -277,16 +317,28 @@ const DAYS = [
           "Bilanciere verso la parte alta del petto, non verso il collo",
           "Espira nella fase di spinta, inspira nella discesa controllata"
         ],
+        wkData:[
+          {rir:"RIR 2", rest:'120"', tech:"TUT 3-1-1 su tutte le serie. Priorità alla tecnica e carico progressivo.", type:"base"},
+          {rir:"RIR 1", rest:'120"', tech:"Aumenta il carico rispetto a W1-2. TUT 3-1-1 invariato.", type:"base"},
+          {rir:"RIR 0–1", rest:'120"', tech:"Rest-Pause sull'ultima serie: quasi al cedimento → posa il peso → 15\" pausa → riprendi +reps → 15\" → +reps.", type:"restpause"},
+          {rir:"RIR 0", rest:'120"', tech:"Rest-Pause sulle ultime 2 serie. Densità massima, spingi ogni serie al limite assoluto.", type:"restpause"}
+        ],
         prog:[["W1–2","4 set, TUT 3-1-1, RIR 2"],["W3–4","4 set, RIR 1"],["W5–6","Rest-Pause: quasi al cedimento, 15\" pausa, riparti"],["W7–8","Rest-Pause continuo, densità massima"]]},
       {num:"2A", name:"Pec Fly (Superset →)", summary:"3×10-12 | TUT 3-1-2", sets:"3×10-12", tut:["3","1","2"], rest:"→ subito 2B", yt:"pec deck fly machine",
         note:"Superset con Crossover basso: nessun recupero tra 2A e 2B. Recupera 60\" solo dopo il crossover.",
-        gsTip:["Se il Pec Deck è occupato: fai prima il Crossover basso da solo (3×12-15) poi Fly manubri (3×10-12) con 60\" di recupero tra i set","In alternativa sostituisci il superset con 4 set di Fly manubri con TUT 3-1-2 e RIR invariato","Il beneficio del superset è il pompaggio continuo: se non puoi farlo, rallenta l eccentrica a 4\" per compensare"],
+        gsTip:["Se il Pec Deck è occupato: fai i 2 esercizi separati (Fly manubri + Crossover) con recupero ridotto a 30-45\" tra ciascuno — recuperare meno compensa l assenza del superset e mantiene circa l 80% del beneficio metabolico","Sì: recuperi brevi (30-45\") tra esercizi separati danno risultati molto simili al superset — il superset funziona proprio perché elimina il recupero e mantiene tensione continua","Se entrambi gli attrezzi sono occupati: 4 set di Fly manubri TUT 3-1-2 con recupero 60\""],
         alt:{name:"Fly manubri su panca piana", yt:"dumbbell fly chest pec"},
         tips:[
           "Mantieni una leggera flessione ai gomiti per tutto il movimento: non bloccarli mai",
           "Immagina di abbracciare un grande albero: arco costante e simmetrico",
           "Il movimento parte dalla contrazione del petto, non dal braccio",
           "Isometria 2\" al picco da W1: tieni la contrazione prima di aprire"
+        ],
+        wkData:[
+          {rir:"RIR 2", rest:"→ subito 2B", tech:"3 blocchi superset. Isometria 2\" al picco di ogni rep.", type:"base"},
+          {rir:"RIR 1", rest:"→ subito 2B", tech:"3 blocchi superset + Back-Off: dopo l'ultimo superset, -20% peso × 15-20 reps lente.", type:"backoff"},
+          {rir:"RIR 0–1", rest:"→ subito 2B", tech:"5 blocchi superset totali. Isometria 2\" obbligatoria ogni rep.", type:"base"},
+          {rir:"RIR 0", rest:"→ subito 2B", tech:"5 blocchi superset + Drop Set sull'ultimo Fly: al cedimento → -30% → continua.", type:"dropset"}
         ],
         prog:[["W1–2","3 blocchi. Isometria 2\" al picco"],["W3–4","3 blocchi + Back-Off"],["W5–6","5 blocchi"],["W7–8","5 blocchi + Drop Set"]]},
       {num:"2B", name:"Crossover basso (Superset)", summary:"3×12-15 | TUT 2-1-2", sets:"3×12-15", tut:["2","1","2"], rest:'60" dopo superset', yt:"cable crossover low chest",
@@ -298,6 +350,12 @@ const DAYS = [
           "Non tirare con le braccia: il petto chiude il movimento",
           "Senti la contrazione nella parte bassa del petto al picco di ogni rep"
         ],
+        wkData:[
+          {rir:"RIR 2", rest:'60"', tech:"Recupera 60\" dopo questo, poi ricomincia da 2A.", type:"base"},
+          {rir:"RIR 1", rest:'60"', tech:"Isometria 2\" al picco da questa settimana. Recupera 60\" poi Back-Off se previsto.", type:"base"},
+          {rir:"RIR 0–1", rest:'60"', tech:"5 blocchi. Isometria 2\" obbligatoria. Recupera 60\" poi ricomincia.", type:"base"},
+          {rir:"RIR 0", rest:'60"', tech:"5 blocchi + Drop Set sull'ultimo. Recupera 60\" poi ricomincia.", type:"dropset"}
+        ],
         prog:[["W1–2","3 blocchi"],["W3–4","3 blocchi + Back-Off"],["W5–6","5 blocchi"],["W7–8","5 blocchi + Drop Set. Isometria 2\""]]},
       {num:"3", name:"Chest Press", summary:"3×8-10 | TUT 3-1-1", sets:"3×8-10", tut:["3","1","1"], rest:'75–90"', yt:"chest press machine",
         note:"Back-Off W3-4: dopo i set normali, scala il peso del 15-20% e fai 15-20 reps di pompaggio.",
@@ -307,6 +365,12 @@ const DAYS = [
           "Non estendere completamente i gomiti: mantieni tensione costante sul petto",
           "Spingi attraverso i pollici, non i palmi, per attivare meglio il petto",
           "Back-Off W3-4: -20% peso, 15-20 reps lente per pompaggio puro"
+        ],
+        wkData:[
+          {rir:"RIR 2", rest:'75–90"', tech:"3 serie normali. TUT 3-1-1, esecuzione controllata.", type:"base"},
+          {rir:"RIR 1", rest:'90"', tech:"Back-Off dopo le 3 serie: scala -20% il peso → 15-20 reps lente senza recupero dall'ultima serie.", type:"backoff"},
+          {rir:"RIR 0–1", rest:'90"', tech:"Spingi ogni serie vicino al cedimento tecnico. TUT 3-1-1 invariato.", type:"base"},
+          {rir:"RIR 0", rest:'75"', tech:"Drop Set sull'ultima serie: al cedimento → -25% peso → continua fino a nuovo cedimento.", type:"dropset"}
         ],
         prog:[["W1–2","3 set, RIR 2"],["W3–4","3 set + Back-Off -15/20%"],["W5–6","RIR 0–1"],["W7–8","Drop Set finale"]]},
       {num:"5", name:"Dip station", summary:"3×max | TUT 2-1-1", sets:"3×max", tut:["2","1","1"], rest:'75"', yt:"dips exercise technique",
@@ -318,9 +382,16 @@ const DAYS = [
           "Non rimbalzare in basso: usa un movimento fluido e controllato",
           "Se troppo difficile usa la macchina assistita o un cavo per il contrappeso"
         ],
+        wkData:[
+          {rir:"Cedimento tecnico", rest:'75"', tech:"3 serie al cedimento tecnico. Nota i reps per battere il record la prossima volta.", type:"base"},
+          {rir:"Cedimento tecnico", rest:'75"', tech:"Prova a fare +1-2 reps rispetto a W1-2 su ogni serie.", type:"base"},
+          {rir:"Cedimento tecnico", rest:'75"', tech:"Batti i reps di W3-4. Cedimento tecnico assoluto.", type:"base"},
+          {rir:"Cedimento tecnico", rest:'75"', tech:"Massimo assoluto. Batti ogni record precedente.", type:"base"}
+        ],
         prog:[["W1–4","3 set a cedimento tecnico"],["W5–8","Stesso schema, batti i rep precedenti"]]},
-      {num:"6A", name:"Pushdown cavo (Tricipiti)", summary:"3×12-15 | TUT 2-1-2", sets:"3×12-15", tut:["2","1","2"], rest:'60–75"', yt:"cable pushdown triceps",
-        note:"Volume ridotto — tricipiti già preaffaticati. Focus su pompaggio e contrazione.",
+      {num:"6A", name:"Pushdown cavo (Superset →)", summary:"3×12-15 | TUT 2-1-2", sets:"3×12-15", tut:["2","1","2"], rest:"→ subito 6B", yt:"cable pushdown triceps",
+        note:"Superset con Tricep machine: nessun recupero tra 6A e 6B. Recupera 60\" solo dopo la macchina.",
+        gsTip:["Se il cavo è occupato: fai i 2 esercizi separati con recupero ridotto a 30-45\" — i recuperi brevi sostituiscono il superset e mantengono circa l 80% del beneficio metabolico (stesso principio: meno recupero = più stress metabolico = più pompaggio)","Alternativa al cavo: Skull Crusher EZ o Dip strette + Tricep machine con recupero 30-45\" tra i due","Sì: fare 2 esercizi separati con recuperi brevi (30-45\") dà quasi gli stessi benefici del superset — l importante è non recuperare troppo tra i due"],
         alt:{name:"Estensione soprattesta cavo", yt:"overhead cable tricep extension technique"},
         tips:[
           "Gomiti fissi ai fianchi durante tutto il movimento: non si spostano",
@@ -328,15 +399,27 @@ const DAYS = [
           "Usa la presa che preferisci: corda, barra dritta o V-bar",
           "Non inarcare la schiena per aiutarti: riduci il peso se succede"
         ],
+        wkData:[
+          {rir:"RIR 1–2", rest:"→ subito 6B", tech:"3 superset con 6B. Nessun recupero prima della Tricep machine.", type:"base"},
+          {rir:"RIR 1", rest:"→ subito 6B", tech:"3 superset. Isometria 1\" al picco di ogni rep.", type:"base"},
+          {rir:"RIR 0–1", rest:"→ subito 6B", tech:"3 superset al limite. Gomiti fissi, massima contrazione.", type:"base"},
+          {rir:"RIR 0", rest:"→ subito 6B", tech:"3 superset + Drop Set sull'ultima serie di pushdown: al cedimento → -30% → continua.", type:"dropset"}
+        ],
         prog:[["W1–8","Volume costante, esecuzione controllata"]]},
-      {num:"6B", name:"Triceps machine", summary:"3×10-12 | TUT 2-1-2", sets:"3×10-12", tut:["2","1","2"], rest:'60"', yt:"tricep machine extension",
-        note:"Massima contrazione a ogni rep nel punto finale dell'estensione.",
+      {num:"6B", name:"Triceps machine (Superset)", summary:"3×10-12 | TUT 2-1-2", sets:"3×10-12", tut:["2","1","2"], rest:'60" dopo superset', yt:"tricep machine extension",
+        note:"Massima contrazione a ogni rep nel punto finale dell'estensione. Recupera 60\" poi ricomincia da 6A.",
         alt:{name:"Skull Crusher EZ bar", yt:"skull crushers ez bar technique"},
         tips:[
           "Regola il sedile: le braccia devono iniziare a 80-90° dal busto",
           "Spingi fino alla massima estensione e tieni 1\" al picco",
           "Eccentrica lenta: conta i 2\" nella fase di risalita del TUT",
           "Schiena incollata allo schienale per tutto il movimento"
+        ],
+        wkData:[
+          {rir:"RIR 1–2", rest:'60"', tech:"Recupera 60\" dopo questo esercizio, poi ricomincia da 6A.", type:"base"},
+          {rir:"RIR 1", rest:'60"', tech:"Massima estensione al picco. Recupera 60\" poi ricomincia.", type:"base"},
+          {rir:"RIR 0–1", rest:'60"', tech:"Al limite tecnico. Recupera 60\" poi ricomincia.", type:"base"},
+          {rir:"RIR 0", rest:'60"', tech:"Drop Set sull'ultima: al cedimento → -30% → continua. Poi recupera 60\" e ricomincia.", type:"dropset"}
         ],
         prog:[["W1–8","Volume costante, ultima cosa della sessione"]]},
       {num:"Post", name:"Stretching post", mob:true, items:[
@@ -362,6 +445,12 @@ const DAYS = [
           "Mantieni il basso schiena incollato alla struttura del macchinario",
           "Scendi finché le cosce sono parallele al pavimento o oltre"
         ],
+        wkData:[
+          {rir:"RIR 2", rest:'90–120"', tech:"4 serie. TUT 3-1-1, profondità massima, tecnica prioritaria.", type:"base"},
+          {rir:"RIR 1", rest:'90–120"', tech:"Aumenta il carico rispetto a W1-2. Stesso TUT e profondità.", type:"base"},
+          {rir:"RIR 0–1", rest:'120"', tech:"Spingi al limite su ogni serie. Profondità e tecnica invariate.", type:"base"},
+          {rir:"RIR 0", rest:'120"', tech:"Densità massima: 4 serie al cedimento tecnico assoluto.", type:"base"}
+        ],
         prog:[["W1–2","4 set, TUT 3-1-1, RIR 2"],["W3–4","RIR 1, intensità aumentata"],["W5–6","RIR 0–1, spinte al limite"],["W7–8","Densità massima"]]},
       {num:"2", name:"Pressa 45°", summary:"3×10 | TUT 3-1-1", sets:"3×10", tut:["3","1","1"], rest:'90–120"', yt:"leg press 45 degrees",
         note:"Controlla la discesa per tutto il TUT. Secondo volume di quadricipiti.",
@@ -372,16 +461,28 @@ const DAYS = [
           "Non bloccare le ginocchia nella spinta finale: mantieni tensione",
           "Tieni la schiena bassa sempre a contatto con lo schienale"
         ],
+        wkData:[
+          {rir:"RIR 2", rest:'90–120"', tech:"3 serie, discesa 3\" controllata.", type:"base"},
+          {rir:"RIR 1", rest:'90–120"', tech:"Aumenta carico. TUT 3-1-1 invariato.", type:"base"},
+          {rir:"RIR 0–1", rest:'120"', tech:"Spingi vicino al cedimento tecnico.", type:"base"},
+          {rir:"RIR 0", rest:'120"', tech:"Cedimento tecnico assoluto su ogni serie.", type:"base"}
+        ],
         prog:[["W1–2","3 set, RIR 2"],["W3–4","RIR 1"],["W5–8","Intensità progressiva"]]},
       {num:"3A", name:"Pressa orizzontale (Superset →)", summary:"3×10-12 | TUT 3-1-1", sets:"3×10-12", tut:["3","1","1"], rest:"→ subito 3B", yt:"horizontal leg press machine",
         note:"Superset con Leg Extension. Isometria 2\" W3-6. Drop Set W7-8. Back-Off W3-4.",
-        gsTip:["Se la Pressa orizzontale è occupata: fai solo Leg Extension (4×12-15) con RIR invariato e TUT 3-1-2","In alternativa usa la Pressa 45° già fatta in precedenza come alternativa alla pressa orizzontale e abbinala comunque alla Leg Extension","Se entrambe sono occupate: Bulgarian Split Squat (3×10 per gamba) + Sissy Squat (3×12) hanno lo stesso effetto sul quadricipite"],
+        gsTip:["Se la Pressa orizzontale è occupata: fai solo Leg Extension (4×12-15) con RIR invariato e TUT 3-1-2","In alternativa usa la Pressa 45° già fatta come sostituto e abbinala alla Leg Extension","Sì: fare i 2 esercizi separati con recupero ridotto a 30-45\" dà circa l 80% del beneficio del superset"],
         alt:{name:"Bulgarian Split Squat", yt:"bulgarian split squat technique"},
         tips:[
           "Piedi al centro o nella parte bassa della pedana per isolare i quadricipiti",
           "Stesso TUT della Pressa 45°: discesa 3\" controllata",
           "Respira: inspira nella discesa, espira con forza nella spinta",
           "Vai subito alla Leg Extension senza recupero"
+        ],
+        wkData:[
+          {rir:"RIR 2", rest:"→ subito 3B", tech:"3 blocchi superset con Leg Extension.", type:"base"},
+          {rir:"RIR 1", rest:"→ subito 3B", tech:"3 blocchi + Back-Off: dopo l'ultimo superset, -20% peso × 15-20 reps.", type:"backoff"},
+          {rir:"RIR 0–1", rest:"→ subito 3B", tech:"Isometria 2\" al picco sulla pressa. Spingi vicino al cedimento.", type:"isometria"},
+          {rir:"RIR 0", rest:"→ subito 3B", tech:"Drop Set sull'ultima Pressa: al cedimento → -25% → continua.", type:"dropset"}
         ],
         prog:[["W1–2","3 blocchi"],["W3–4","3 blocchi + Back-Off -15/20%"],["W5–6","Isometria 2\" al picco"],["W7–8","Drop Set finale"]]},
       {num:"3B", name:"Leg Extension (Superset)", summary:"3×12-15 | TUT 3-1-2", sets:"3×12-15", tut:["3","1","2"], rest:'75–90" dopo superset', yt:"leg extension machine tutorial",
@@ -393,6 +494,12 @@ const DAYS = [
           "Nella discesa: non lasciare cadere il peso, controlla il TUT 2\"",
           "Back-Off da W3: peso -20%, 15-20 reps di pompaggio puro"
         ],
+        wkData:[
+          {rir:"RIR 2", rest:'75–90"', tech:"Recupera 75-90\" dopo il superset, poi ricomincia da 3A.", type:"base"},
+          {rir:"RIR 1", rest:'75–90"', tech:"Back-Off sulla Leg Extension: dopo l'ultimo superset, scala -20% × 15-20 reps lente.", type:"backoff"},
+          {rir:"RIR 0–1", rest:'90"', tech:"Isometria 2\" al picco di ogni rep. Recupera 90\" poi ricomincia.", type:"isometria"},
+          {rir:"RIR 0", rest:'90"', tech:"Drop Set sull'ultima Leg Extension: al cedimento → -25% → continua.", type:"dropset"}
+        ],
         prog:[["W1–2","3 blocchi, superset"],["W3–4","Back-Off: scala peso, 15-20 reps extra"],["W5–6","Isometria 2\""],["W7–8","Drop Set"]]},
       {num:"5A", name:"Leg Curl prono (Femorali)", summary:"3×10-12 | TUT 2-1-2", sets:"3×10-12", tut:["2","1","2"], rest:'60"', yt:"prone leg curl machine",
         note:"Rest-Pause da W5-8: quasi al cedimento, 15\" pausa, riparti 2-3 volte.",
@@ -402,6 +509,12 @@ const DAYS = [
           "Non sollevare il sedere per aiutarti: se succede, riduci il carico",
           "Senti lo stretching nei femorali nella fase eccentrica (discesa)",
           "Rest-Pause da W5: quasi al cedimento, 15\" pausa, riparti 2-3 volte"
+        ],
+        wkData:[
+          {rir:"RIR 2", rest:'60"', tech:"3 serie normali, TUT 2-1-2.", type:"base"},
+          {rir:"RIR 1", rest:'60"', tech:"Aumenta carico. TUT invariato.", type:"base"},
+          {rir:"RIR 0–1", rest:'75"', tech:"Rest-Pause sull'ultima serie: quasi al cedimento → posa il peso → 15\" pausa → riprendi +reps → 15\" → +reps.", type:"restpause"},
+          {rir:"RIR 0", rest:'75"', tech:"Rest-Pause sulle ultime 2 serie. Spingi al limite assoluto ogni volta.", type:"restpause"}
         ],
         prog:[["W1–4","3 set, esecuzione controllata"],["W5–8","Rest-Pause: al limite, 15\" micro-recupero, riparti"]]},
       {num:"5B", name:"Romanian Deadlift bilanciere", summary:"3×8-10 | TUT 3-1-1", sets:"3×8-10", tut:["3","1","1"], rest:'90–120"', yt:"romanian deadlift barbell",
@@ -413,6 +526,12 @@ const DAYS = [
           "Fai scorrere il bilanciere lungo le gambe fino a circa meta stinco",
           "Ritorna su contraendo prima i femorali poi i glutei"
         ],
+        wkData:[
+          {rir:"RIR 2", rest:'90–120"', tech:"3 serie, discesa lenta 3\". Focus sullo stretch dei femorali.", type:"base"},
+          {rir:"RIR 1", rest:'90–120"', tech:"Aumenta carico rispetto a W1-2.", type:"base"},
+          {rir:"RIR 0–1", rest:'90–120"', tech:"Carico progressivo. Schiena neutra obbligatoria.", type:"base"},
+          {rir:"RIR 0", rest:'90–120"', tech:"Cedimento tecnico. Riduci carico se la schiena si arrotola.", type:"base"}
+        ],
         prog:[["W1–2","3 set, RIR 2, focus stretch"],["W3–4","RIR 1"],["W5–8","Carico progressivo"]]},
       {num:"6", name:"Calf Press", summary:"4×15 | TUT 2-1-2", sets:"4×15", tut:["2","1","2"], rest:'60"', yt:"calf press machine",
         note:"Range di movimento completo: dalla massima dorsiflessione alla massima plantarflessione. Non rimbalzare.",
@@ -422,6 +541,12 @@ const DAYS = [
           "Pausa di 1\" nella posizione bassa per eliminare il rimbalzo tendineo",
           "Sali fino alla massima plantarflessione: punta del piede verso il basso",
           "Mantieni 1\" al picco prima di scendere di nuovo"
+        ],
+        wkData:[
+          {rir:"RIR 1–2", rest:'60"', tech:"4 serie, TUT 2-1-2. Pausa 1\" in basso obbligatoria.", type:"base"},
+          {rir:"RIR 1", rest:'60"', tech:"Stesso schema. Aumenta carico se riesci a mantenere il TUT.", type:"base"},
+          {rir:"RIR 0–1", rest:'60"', tech:"Spingi vicino al cedimento. Range completo sempre.", type:"base"},
+          {rir:"RIR 0", rest:'60"', tech:"Cedimento tecnico. Pausa 1\" in basso: non usare il rimbalzo.", type:"base"}
         ],
         prog:[["W1–8","Volume costante, TUT 2-1-2 su tutti i set"]]},
       {num:"Ab", name:"Addome PRO", mob:true, items:[
@@ -454,6 +579,12 @@ const DAYS = [
           "Porta la sbarra verso la clavicola, non dietro la nuca: protegge il collo",
           "Pensa a portare i gomiti verso i fianchi, non a tirare con le braccia"
         ],
+        wkData:[
+          {rir:"RIR 2", rest:'90–120"', tech:"4 serie, TUT 3-1-1. Focus: gomiti verso i fianchi.", type:"base"},
+          {rir:"RIR 1", rest:'90–120"', tech:"Back-Off dopo le 4 serie: scala -15/20% il peso → 15-20 reps pompaggio.", type:"backoff"},
+          {rir:"RIR 0–1", rest:'120"', tech:"Rest-Pause sull'ultima serie: quasi al cedimento → 15\" pausa → riprendi +reps → 15\" → +reps.", type:"restpause"},
+          {rir:"RIR 0", rest:'120"', tech:"Rest-Pause sulle ultime 2 serie. Spingi al limite assoluto.", type:"restpause"}
+        ],
         prog:[["W1–2","4 set, RIR 2"],["W3–4","Back-Off: -15/20% carico, 15-20 reps"],["W5–8","Rest-Pause: spingi al limite, micro-recupero"]]},
       {num:"2", name:"Pullover", summary:"3×12 | TUT 3-1-2", sets:"3×12", tut:["3","1","2"], rest:'60–75"', yt:"dumbbell pullover back",
         note:"Gomiti leggermente flessi. Senti la tensione nel gran dorsale durante la fase eccentrica.",
@@ -463,6 +594,12 @@ const DAYS = [
           "Il range va da sopra la testa fino all altezza dei fianchi",
           "Nella fase di allungamento senti la tensione nel gran dorsale",
           "Non usare il peso per trascinare: il TUT da 3\" e obbligatorio in discesa"
+        ],
+        wkData:[
+          {rir:"RIR 2", rest:'60–75"', tech:"3 serie. TUT 3-1-2, focus stretch dorsale.", type:"base"},
+          {rir:"RIR 1", rest:'60–75"', tech:"Aumenta carico. TUT invariato.", type:"base"},
+          {rir:"RIR 0–1", rest:'75"', tech:"Spingi vicino al cedimento. Senti sempre lo stretch.", type:"base"},
+          {rir:"RIR 0", rest:'75"', tech:"Cedimento tecnico. Schiena neutra in tutto il range.", type:"base"}
         ],
         prog:[["W1–8","3 set, esecuzione controllata"]]},
       {num:"3", name:"Row x dorso", summary:"4×10 | TUT 3-1-1", sets:"4×10", tut:["3","1","1"], rest:'75–90"', yt:"cable row back exercise",
@@ -474,6 +611,12 @@ const DAYS = [
           "Isometria 2\" al picco da W3: scapole che si avvicinano al centro",
           "Eccentrica controllata: non lasciare tornare il cavo senza controllo"
         ],
+        wkData:[
+          {rir:"RIR 2", rest:'75–90"', tech:"4 serie, TUT 3-1-1. Schiena neutra prioritaria.", type:"base"},
+          {rir:"RIR 1", rest:'90"', tech:"Isometria 2\" al picco obbligatoria da questa settimana in poi.", type:"isometria"},
+          {rir:"RIR 0–1", rest:'90"', tech:"Isometria 2\" + carico progressivo.", type:"isometria"},
+          {rir:"RIR 0", rest:'90"', tech:"Cedimento tecnico + isometria 2\" al picco obbligatoria.", type:"isometria"}
+        ],
         prog:[["W1–2","4 set, RIR 2"],["W3–4","RIR 1"],["W5–8","Isometria 2\" al picco obbligatoria"]]},
       {num:"4", name:"Rematore T-bar", summary:"3×10-12 | TUT 3-1-1", sets:"3×10-12", tut:["3","1","1"], rest:'75–90"', yt:"t bar row technique",
         note:"Drop Set W7-8. Mantieni schiena neutra, bilanciere vicino al corpo.",
@@ -484,16 +627,28 @@ const DAYS = [
           "Non usare il rimbalzo delle anche o delle gambe per aiutarti",
           "Schiena neutra: se archi troppo, riduci il peso immediatamente"
         ],
+        wkData:[
+          {rir:"RIR 2", rest:'75–90"', tech:"3 serie. Schiena neutra, bilanciere vicino al corpo.", type:"base"},
+          {rir:"RIR 1", rest:'90"', tech:"Aumenta carico. TUT invariato.", type:"base"},
+          {rir:"RIR 0–1", rest:'90"', tech:"Spingi vicino al cedimento tecnico.", type:"base"},
+          {rir:"RIR 0", rest:'90"', tech:"Drop Set sull'ultima serie: al cedimento → -25% → continua.", type:"dropset"}
+        ],
         prog:[["W1–6","3 set, esecuzione controllata"],["W7–8","Drop Set finale"]]},
       {num:"5A", name:"Lat machine presa stretta (Superset →)", summary:"3×12 | TUT 2-1-2", sets:"3×12", tut:["2","1","2"], rest:"→ subito 5B", yt:"lat pulldown close grip",
         note:"Superset con Face pull: nessun recupero tra 5A e 5B. Recupera 75-90\" solo dopo il Face pull.",
-        gsTip:["Il Face pull (5B) si fa sempre con il cavo: non occupa mai la lat machine, quindi questo superset e quasi sempre fattibile","Se la lat machine e occupata: fai Pullover (manubri o cavo) + Face pull come superset alternativo","Se proprio non riesci: fai Face pull da solo (4×15) con 45\" di recupero tra i set, e la lat machine quando si libera"],
+        gsTip:["Il Face pull (5B) usa sempre il cavo: non occupa mai la lat machine — quindi questo superset è quasi sempre fattibile","Se la lat machine è occupata: Pullover manubri + Face pull come superset alternativo, stessa struttura","Sì: fare i 2 esercizi separati con recupero ridotto a 30-45\" dà circa l 80% del beneficio del superset"],
         alt:{name:"Neutral Grip Pull Up", yt:"neutral grip pull up technique"},
         tips:[
           "La presa stretta isola il dorsale basso e centrale rispetto alla presa larga",
           "Mantieni i gomiti vicini al corpo durante tutta la trazione",
           "Tira fino alla clavicola: senti il dorsale contratto al massimo",
           "Vai subito al Face pull senza recupero"
+        ],
+        wkData:[
+          {rir:"RIR 2", rest:"→ subito 5B", tech:"3 blocchi superset con Face pull.", type:"base"},
+          {rir:"RIR 1", rest:"→ subito 5B", tech:"4 blocchi superset totali.", type:"base"},
+          {rir:"RIR 0–1", rest:"→ subito 5B", tech:"4 blocchi + Rest-Pause sull'ultima lat machine: quasi al cedimento → 15\" → riprendi.", type:"restpause"},
+          {rir:"RIR 0", rest:"→ subito 5B", tech:"4 blocchi + Drop Set sull'ultima lat machine: al cedimento → -25% → continua.", type:"dropset"}
         ],
         prog:[["W1–2","3 blocchi"],["W3–4","4 blocchi"],["W5–6","4 blocchi + Rest-Pause"],["W7–8","4 blocchi + Drop Set"]]},
       {num:"5B", name:"Face pull (Superset)", summary:"3×15 | TUT 2-1-2", sets:"3×15", tut:["2","1","2"], rest:'75–90" dopo superset', yt:"face pull cable technique",
@@ -505,6 +660,12 @@ const DAYS = [
           "Gomiti alti e larghi: non devono scendere sotto la linea delle spalle",
           "Fondamentale per la salute delle cuffie dei rotatori: non saltarlo mai"
         ],
+        wkData:[
+          {rir:"RIR 2", rest:'75–90"', tech:"Recupera 75-90\" dopo il superset, poi ricomincia da 5A.", type:"base"},
+          {rir:"RIR 1", rest:'75–90"', tech:"4 blocchi. Isometria 1\" al picco. Recupera poi ricomincia.", type:"base"},
+          {rir:"RIR 0–1", rest:'90"', tech:"4 blocchi. Isometria 1\" obbligatoria ogni rep.", type:"isometria"},
+          {rir:"RIR 0", rest:'90"', tech:"4 blocchi. Recupera 90\" poi ricomincia da 5A.", type:"base"}
+        ],
         prog:[["W1–2","3 blocchi"],["W3–4","4 blocchi"],["W5–6","4 blocchi + Rest-Pause"],["W7–8","4 blocchi + Drop Set"]]},
       {num:"6A", name:"Curl machine (Bicipiti)", summary:"3×10 | TUT 2-1-2", sets:"3×10", tut:["2","1","2"], rest:'60–75"', yt:"bicep curl machine",
         note:"Volume ridotto — bicipiti preaffaticati. Esecuzione pulita e controllata.",
@@ -514,6 +675,12 @@ const DAYS = [
           "Non usare la schiena o le spalle per aiutarti nella salita",
           "Massima contrazione al picco: 1\" isometria prima di scendere",
           "Eccentrica lenta 2\": conta durante la discesa del peso"
+        ],
+        wkData:[
+          {rir:"RIR 1–2", rest:'60–75"', tech:"3 serie. Esecuzione pulita, massima contrazione.", type:"base"},
+          {rir:"RIR 1", rest:'60–75"', tech:"Isometria 1\" al picco obbligatoria.", type:"base"},
+          {rir:"RIR 0–1", rest:'75"', tech:"Spingi vicino al cedimento tecnico.", type:"base"},
+          {rir:"RIR 0", rest:'75"', tech:"Cedimento tecnico. Mantieni eccentrica 2\" anche stanco.", type:"base"}
         ],
         prog:[["W1–8","Volume ridotto, esecuzione controllata"]]},
       {num:"6B", name:"Curl cavo", summary:"3×12 | TUT 2-1-2", sets:"3×12", tut:["2","1","2"], rest:'60–75"', yt:"cable curl bicep",
@@ -525,6 +692,12 @@ const DAYS = [
           "Al picco: supina leggermente il polso per massimizzare la contrazione",
           "Non lasciare cadere il cavo: controlla la discesa 2\""
         ],
+        wkData:[
+          {rir:"RIR 1–2", rest:'60–75"', tech:"3 serie. Supinazione al picco, eccentrica 2\".", type:"base"},
+          {rir:"RIR 1", rest:'60–75"', tech:"Massima contrazione obbligatoria.", type:"base"},
+          {rir:"RIR 0–1", rest:'75"', tech:"Spingi vicino al cedimento tecnico.", type:"base"},
+          {rir:"RIR 0", rest:'75"', tech:"Drop Set sull'ultima: al cedimento → -30% → continua.", type:"dropset"}
+        ],
         prog:[["W1–8","Volume ridotto, massima contrazione"]]},
       {num:"7A", name:"Alzate laterali machine Nautilus", summary:"3×15 | TUT 2-1-2", sets:"3×15", tut:["2","1","2"], rest:'60"', yt:"lateral raise machine nautilus",
         note:"Rest-Pause da W5-8: spingi al limite, 15\" pausa, riparti.",
@@ -535,6 +708,12 @@ const DAYS = [
           "Non usare il momento: sollevamento lento, discesa altrettanto lenta",
           "Rest-Pause da W5: al cedimento tecnico, 15\" micro-recupero, riparti"
         ],
+        wkData:[
+          {rir:"RIR 2", rest:'60"', tech:"3 serie, TUT 2-1-2.", type:"base"},
+          {rir:"RIR 1", rest:'60"', tech:"Aumenta carico o reps rispetto a W1-2.", type:"base"},
+          {rir:"RIR 0–1", rest:'75"', tech:"Rest-Pause sull'ultima serie: quasi al cedimento → 15\" pausa → riprendi +reps → 15\" → +reps.", type:"restpause"},
+          {rir:"RIR 0", rest:'75"', tech:"Rest-Pause sulle ultime 2 serie. Spingi al limite assoluto ogni volta.", type:"restpause"}
+        ],
         prog:[["W1–4","3 set, RIR 2–1"],["W5–8","Rest-Pause: al limite, micro-recupero"]]},
       {num:"7B", name:"Alzate laterali cavi singolo", summary:"3×15 | TUT 2-1-2", sets:"3×15", tut:["2","1","2"], rest:'60"', yt:"single arm cable lateral raise",
         note:"Esecuzione unilaterale. Mantieni il busto stabile, non dondolare.",
@@ -544,6 +723,12 @@ const DAYS = [
           "Il pollice leggermente piu basso del mignolo (come versare una bottiglia)",
           "Busto stabile: non inclinare la schiena o le anche per aiutarti",
           "Il cavo crea tensione costante a 0°: molto piu efficace del manubrio"
+        ],
+        wkData:[
+          {rir:"RIR 1–2", rest:'60"', tech:"3 serie per lato. Busto stabile.", type:"base"},
+          {rir:"RIR 1", rest:'60"', tech:"Aumenta carico o reps.", type:"base"},
+          {rir:"RIR 0–1", rest:'60"', tech:"Spingi vicino al cedimento tecnico.", type:"base"},
+          {rir:"RIR 0", rest:'60"', tech:"Cedimento tecnico. Non dondolare per aiutarti.", type:"base"}
         ],
         prog:[["W1–8","3 set, esecuzione pulita"]]},
       {num:"Post", name:"Stretching post", mob:true, items:[
@@ -569,16 +754,29 @@ const DAYS = [
           "Spingi verso l alto senza bloccare completamente i gomiti al picco",
           "Discesa controllata 3\": porta il peso fino alla posizione di partenza"
         ],
+        wkData:[
+          {rir:"RIR 2", rest:'90–120"', tech:"4 serie. TUT 3-1-1, priorità al carico progressivo.", type:"base"},
+          {rir:"RIR 1", rest:'90–120"', tech:"Aumenta carico rispetto a W1-2. TUT invariato.", type:"base"},
+          {rir:"RIR 0–1", rest:'120"', tech:"Spingi vicino al cedimento tecnico su ogni serie.", type:"base"},
+          {rir:"RIR 0", rest:'120"', tech:"Cedimento tecnico assoluto. Massima intensità.", type:"base"}
+        ],
         prog:[["W1–2","4 set, RIR 2"],["W3–4","RIR 1, carico aumentato"],["W5–6","RIR 0–1"],["W7–8","Massima intensità"]]},
       {num:"2A", name:"Alzate laterali machine (Giant Set →)", summary:"4–6×15 | TUT 2-1-2", sets:"4–6×15", tut:["2","1","2"], rest:"→ subito 2B", yt:"lateral raise machine nautilus", gs:true,
         note:"Giant Set con 2B e 2C: nessun recupero tra i 3 esercizi. Recupera 90-120\" solo dopo aver fatto tutti e 3. Prepara tutto in anticipo.",
-        gsTip:["Se la machine Nautilus e occupata: inizia direttamente da 2B (Alzate manubri) e fai un superset 2B+2C invece del giant set completo","In alternativa: fai un Triple Drop Set sulle Alzate manubri (peso normale 15 reps → -30% 12 reps → -30% ancora 10 reps) che ha lo stesso effetto metabolico","Preparati in anticipo: tieni i manubri vicini e il cavo gia impostato prima di iniziare il giro"],
+        gsTip:["Se la machine Nautilus è occupata: inizia direttamente da 2B (Alzate manubri) e fai un superset 2B+2C invece del Giant Set completo","In alternativa: vedi sotto l alternativa singola (Triple Drop Set) che replica lo stesso effetto metabolico con un solo attrezzo","Preparati in anticipo: tieni i manubri vicini e il cavo già impostato prima di iniziare il giro"],
+        gsAlt:{name:"Triple Drop Set – Alzate laterali manubri", sets:"4–6 giri × 15+12+10 reps", rest:'90–120"', note:"Sostituisce l'intero Giant Set 2A+2B+2C. Peso normale × 15 reps → senza recupero -30% peso × 12 reps → senza recupero -30% ancora × 10 reps. Recupera 90-120\" e ripeti per 4-6 giri. Stesso effetto metabolico del Giant Set: accumulo metabolico massimo con un solo attrezzo.", yt:"lateral raise drop set dumbbell technique"},
         alt:{name:"Alzate laterali manubri (in piedi)", yt:"dumbbell lateral raise technique"},
         tips:[
           "Primo esercizio del Giant Set: allinea il fulcro della macchina con la spalla",
           "Porta le braccia fino all orizzontale, non oltre: protegge il sovraspinato",
           "Usa un peso leggermente piu leggero del solito: dovrai fare altri 2 esercizi subito dopo",
           "Vai subito a 2B senza recupero"
+        ],
+        wkData:[
+          {rir:"RIR 2", rest:"→ subito 2B", tech:"4 giri del Giant Set completo (2A → 2B → 2C → recupero 90-120\" → ricomincia).", type:"giant"},
+          {rir:"RIR 1", rest:"→ subito 2B", tech:"5 giri totali del Giant Set.", type:"giant"},
+          {rir:"RIR 0–1", rest:"→ subito 2B", tech:"6 giri totali + Rest-Pause sulle Alzate manubri (2B): quasi al cedimento → 15\" → riprendi.", type:"restpause"},
+          {rir:"RIR 0", rest:"→ subito 2B", tech:"6 giri totali + Drop Set sulle Alzate manubri (2B): al cedimento → -30% → continua.", type:"dropset"}
         ],
         prog:[["W1–2","4 giri totali"],["W3–4","5 giri totali"],["W5–6","6 giri + Rest-Pause"],["W7–8","6 giri + Drop Set"]]},
       {num:"2B", name:"Alzate laterali manubri (Giant Set →)", summary:"4–6×12 | TUT 2-1-2", sets:"4–6×12", tut:["2","1","2"], rest:"→ subito 2C", yt:"dumbbell lateral raise technique", gs:true,
@@ -590,6 +788,12 @@ const DAYS = [
           "Gomiti con leggera flessione fissa, non cambiarla durante il movimento",
           "Vai subito a 2C senza recupero"
         ],
+        wkData:[
+          {rir:"RIR 2", rest:"→ subito 2C", tech:"Parte del Giant Set (4 giri). Vai subito a 2C senza recupero.", type:"giant"},
+          {rir:"RIR 1", rest:"→ subito 2C", tech:"Parte del Giant Set (5 giri). Vai subito a 2C.", type:"giant"},
+          {rir:"RIR 0–1", rest:"→ subito 2C", tech:"6 giri. Rest-Pause qui: al cedimento → 15\" → riprendi → poi subito 2C.", type:"restpause"},
+          {rir:"RIR 0", rest:"→ subito 2C", tech:"6 giri. Drop Set qui: al cedimento → -30% → continua → poi subito 2C.", type:"dropset"}
+        ],
         prog:[["W1–2","4 giri totali"],["W3–4","5 giri totali"],["W5–6","6 giri + Rest-Pause"],["W7–8","6 giri + Drop Set"]]},
       {num:"2C", name:"Rear delts cavi (Giant Set)", summary:"4–6×15 | TUT 2-1-2", sets:"4–6×15", tut:["2","1","2"], rest:'90–120" dopo il giro completo', yt:"cable rear delt fly technique", gs:true,
         note:"Terzo esercizio del Giant Set. Dopo questo recupera 90-120\", poi ricomincia da 2A.",
@@ -599,6 +803,12 @@ const DAYS = [
           "Busto leggermente inclinato in avanti, gomiti a 90° aperti lateralmente",
           "Senti la contrazione del deltoide posteriore al picco: tieni 1\"",
           "Dopo questo esercizio: recupero 90-120\" poi ricomincia da 2A"
+        ],
+        wkData:[
+          {rir:"RIR 2", rest:'90–120"', tech:"Fine del giro. Recupera 90-120\" poi ricomincia da 2A. Totale: 4 giri.", type:"giant"},
+          {rir:"RIR 1", rest:'90–120"', tech:"Fine del giro. Recupera 90-120\" poi ricomincia. Totale: 5 giri.", type:"giant"},
+          {rir:"RIR 0–1", rest:'120"', tech:"Fine del giro (6 giri totali). Recupera 120\" poi ricomincia.", type:"giant"},
+          {rir:"RIR 0", rest:'120"', tech:"Fine del giro (6 giri totali). Recupera 120\" poi ricomincia.", type:"giant"}
         ],
         prog:[["W1–2","4 giri totali"],["W3–4","5 giri totali"],["W5–6","6 giri + Rest-Pause"],["W7–8","6 giri + Drop Set"]]},
       {num:"3", name:"Hip Thrust", summary:"3×10 | TUT 2-2-1", sets:"3×10", tut:["2","2","1"], rest:'90–120"', yt:"hip thrust barbell technique",
@@ -610,6 +820,12 @@ const DAYS = [
           "Spingi con i talloni verso il pavimento, non con le punte dei piedi",
           "Al picco: 2\" isometria obbligatoria, contrai i glutei al massimo prima di scendere"
         ],
+        wkData:[
+          {rir:"RIR 2", rest:'90–120"', tech:"3 serie. TUT 2-2-1: 2\" salita, 2\" isometria al picco obbligatoria, 1\" discesa.", type:"isometria"},
+          {rir:"RIR 1", rest:'90–120"', tech:"Aumenta carico. Isometria 2\" al picco invariata.", type:"isometria"},
+          {rir:"RIR 0–1", rest:'90–120"', tech:"Spingi vicino al cedimento. Isometria 2\" sempre.", type:"isometria"},
+          {rir:"RIR 0", rest:'90–120"', tech:"Cedimento tecnico. Isometria 2\" al picco: non saltarla.", type:"isometria"}
+        ],
         prog:[["W1–8","3 set, TUT 2-2-1 obbligatorio. Contrazione glutea massima al picco"]]},
       {num:"4", name:"Leg Curl prono", summary:"3×12 | TUT 2-1-2", sets:"3×12", tut:["2","1","2"], rest:'60"', yt:"prone leg curl machine",
         note:"Femorali in chiusura di sessione. Esecuzione controllata.",
@@ -620,6 +836,12 @@ const DAYS = [
           "Isometria 1\" al picco per sfruttare la massima contrazione dei femorali",
           "Eccentrica controllata 2\" nella discesa: non lasciare cadere il peso"
         ],
+        wkData:[
+          {rir:"RIR 2", rest:'60"', tech:"3 serie, TUT 2-1-2.", type:"base"},
+          {rir:"RIR 1", rest:'60"', tech:"Aumenta carico. TUT invariato.", type:"base"},
+          {rir:"RIR 0–1", rest:'60"', tech:"Spingi vicino al cedimento tecnico.", type:"base"},
+          {rir:"RIR 0", rest:'60"', tech:"Cedimento tecnico. Schiena bassa incollata al macchinario.", type:"base"}
+        ],
         prog:[["W1–8","3 set, esecuzione controllata"]]},
       {num:"5", name:"Romanian Deadlift manubri", summary:"3×10 | TUT 3-1-1", sets:"3×10", tut:["3","1","1"], rest:'90–120"', yt:"romanian deadlift dumbbell",
         note:"Manubri vicini alle gambe. Schiena neutra, cerniera ai fianchi. Senti lo stretch nei femorali.",
@@ -629,6 +851,12 @@ const DAYS = [
           "Il gesto e una cerniera ai fianchi, non uno squat: ginocchia quasi ferme",
           "Scendi fino a sentire lo stretch nei femorali (tipicamente meta stinco)",
           "Ritorna su contraendo prima i femorali poi i glutei: non usare la schiena"
+        ],
+        wkData:[
+          {rir:"RIR 2", rest:'90–120"', tech:"3 serie. Discesa 3\" lenta, focus stretch femorali.", type:"base"},
+          {rir:"RIR 1", rest:'90–120"', tech:"Aumenta carico rispetto a W1-2.", type:"base"},
+          {rir:"RIR 0–1", rest:'90–120"', tech:"Carico progressivo. Schiena neutra obbligatoria.", type:"base"},
+          {rir:"RIR 0", rest:'90–120"', tech:"Cedimento tecnico. Riduci carico se la schiena si arrotola.", type:"base"}
         ],
         prog:[["W1–2","3 set, RIR 2, discesa lenta 3\""],["W3–4","RIR 1"],["W5–8","Carico progressivo"]]},
       {num:"Ab", name:"Addome PRO", mob:true, items:[
@@ -654,6 +882,50 @@ function getSetsCount(setsStr) {
   const m = setsStr.match(/^(\d+)/);
   return m ? parseInt(m[1]) : 3;
 }
+
+function renderSchema(type, sets) {
+  const reps = (sets.match(/×(\S+)/) || ['','?'])[1];
+  const nSets = getSetsCount(sets) || 3;
+  if (type === 'backoff') {
+    const blocks = Array.from({length: Math.min(nSets,3)}, (_,i) =>
+      `<div class="schema-set"><div class="schema-set-label">Set ${i+1}</div><div class="schema-set-val">${reps}</div></div><span class="schema-arrow">→</span>`).join('');
+    return `<div class="schema-wrap"><div class="schema-row">${blocks}<div class="schema-bo"><div class="schema-bo-label">Back-Off</div><div class="schema-bo-val">-20% peso<br>15-20 reps</div></div></div></div>`;
+  }
+  if (type === 'restpause') {
+    return `<div class="schema-wrap"><div class="schema-row">
+      <div class="schema-set"><div class="schema-set-label">Al limite</div><div class="schema-set-val">${reps} reps</div></div>
+      <span class="schema-arrow">→</span>
+      <div class="schema-pause"><div class="schema-pause-label">Pausa</div><div class="schema-pause-val">15"</div></div>
+      <span class="schema-arrow">→</span>
+      <div class="schema-set"><div class="schema-set-label">Riprendi</div><div class="schema-set-val">+4 reps</div></div>
+      <span class="schema-arrow">→</span>
+      <div class="schema-pause"><div class="schema-pause-label">Pausa</div><div class="schema-pause-val">15"</div></div>
+      <span class="schema-arrow">→</span>
+      <div class="schema-set"><div class="schema-set-label">Riprendi</div><div class="schema-set-val">+2 reps</div></div>
+    </div></div>`;
+  }
+  if (type === 'dropset') {
+    return `<div class="schema-wrap"><div class="schema-row">
+      <div class="schema-set"><div class="schema-set-label">Al cedimento</div><div class="schema-set-val">Peso pieno</div></div>
+      <span class="schema-arrow">→</span>
+      <div class="schema-drop"><div class="schema-drop-label">Drop -25%</div><div class="schema-drop-val">Scala subito</div></div>
+      <span class="schema-arrow">→</span>
+      <div class="schema-set"><div class="schema-set-label">Continua</div><div class="schema-set-val">Nuovo ced.</div></div>
+    </div></div>`;
+  }
+  if (type === 'isometria') {
+    return `<div class="schema-wrap"><div class="schema-row">
+      <div class="schema-set"><div class="schema-set-label">Fase salita</div><div class="schema-set-val">Contrai</div></div>
+      <span class="schema-arrow">→</span>
+      <div class="schema-bo"><div class="schema-bo-label">Isometria picco</div><div class="schema-bo-val">Tieni 2"</div></div>
+      <span class="schema-arrow">→</span>
+      <div class="schema-set"><div class="schema-set-label">Discesa</div><div class="schema-set-val">Controlla</div></div>
+    </div></div>`;
+  }
+  return '';
+}
+
+
 
 function saveWeight(dayIdx, exIdx, setIdx, val) {
   const key = `fv_w_d${dayIdx}_e${exIdx}_s${setIdx}`;
@@ -688,10 +960,15 @@ function showWeek(i) {
   activeWeek = i;
   document.querySelectorAll('.wk-btn').forEach((b,j) => b.classList.toggle('active', j===i));
   const w = WEEKS[i];
-  document.getElementById('week-box').innerHTML = `
+  const box = document.getElementById('week-box');
+  if (box) box.innerHTML = `
     <div class="week-title">${w.label}</div>
     <div class="week-desc">${w.desc}</div>
     <div class="week-tags">${w.tags.map(([t,c]) => `<span class="tag ${c}">${t}</span>`).join('')}</div>`;
+  // Update all week spotlight panels
+  document.querySelectorAll('.wk-spot-panel').forEach(el => {
+    el.style.display = (el.dataset.wk == i) ? 'block' : 'none';
+  });
 }
 
 function renderWeekStrip() {
@@ -745,10 +1022,38 @@ function renderExercise(ex, di, ei) {
       <button class="yt-btn" onclick="yt('${ex.alt.yt}')"><span class="yt-icon">▶</span> Video alternativa</button>
     </div>` : '';
 
+  const gsAltHTML = ex.gsAlt ? `
+    <div class="gsalt-box">
+      <div class="gsalt-header">💪 Alternativa se Giant Set non fattibile — stesso effetto</div>
+      <div class="gsalt-name">${ex.gsAlt.name}</div>
+      <div class="gsalt-meta">${ex.gsAlt.sets} · Recupero ${ex.gsAlt.rest}</div>
+      <div class="gsalt-note">${ex.gsAlt.note}</div>
+      <button class="yt-btn" onclick="yt('${ex.gsAlt.yt}')"><span class="yt-icon">▶</span> Video tecnica</button>
+    </div>` : '';
+
   const gsTipHTML = ex.gsTip ? `
     <div class="gs-tip-box">
       <div class="gs-tip-header">🏋 Superset/Giant Set non fattibile? Cosa fare</div>
       <ul class="gs-tip-list">${ex.gsTip.map(t => `<li>${t}</li>`).join('')}</ul>
+    </div>` : '';
+
+  const wkColors = ['tb','ta','tr','tp'];
+  const wkLabels = ['W1–2','W3–4','W5–6','W7–8'];
+  const spotlightHTML = ex.wkData ? `
+    <div class="wk-spotlight">
+      ${ex.wkData.map((wd, wi) => `
+        <div class="wk-spot-panel" data-wk="${wi}" style="display:${wi===activeWeek?'block':'none'}">
+          <div class="wk-spot-header">
+            <span class="tag ${wkColors[wi]}">${wkLabels[wi]}</span>
+            <span class="wk-spot-title">Questa settimana</span>
+          </div>
+          <div class="wk-spot-stat-row">
+            <div class="wk-spot-stat"><span>🎯 Intensità</span>${wd.rir}</div>
+            <div class="wk-spot-stat"><span>⏱ Recupero</span>${wd.rest}</div>
+          </div>
+          <div class="wk-spot-tech">${wd.tech}</div>
+          ${renderSchema(wd.type, ex.sets)}
+        </div>`).join('')}
     </div>` : '';
 
   const tipsHTML = ex.tips ? `
@@ -780,8 +1085,10 @@ function renderExercise(ex, di, ei) {
           </div>
           ${j<2?'<span class="tut-arrow">→</span>':''}`).join('')}
       </div>
+      ${spotlightHTML}
       ${ex.note ? `<div class="note">${ex.note}</div>` : ''}
       ${altHTML}
+      ${gsAltHTML}
       ${gsTipHTML}
       ${tipsHTML}
       <div class="prog-title">Progressione settimanale</div>
@@ -817,11 +1124,12 @@ function alreadyDoneToday(di) {
   return getSessions(di).includes(todayISO());
 }
 
-function addSession(di) {
+function addSession(di, dateISO) {
   const sessions = getSessions(di);
-  const today = todayISO();
-  if (sessions.includes(today)) return; // no duplicates same day
-  sessions.push(today);
+  const d = dateISO || todayISO();
+  if (sessions.includes(d)) return; // no duplicates on same date
+  sessions.push(d);
+  sessions.sort(); // keep chronological order
   localStorage.setItem('fv_sessions_d' + di, JSON.stringify(sessions));
 }
 
@@ -831,10 +1139,23 @@ function removeSession(di, idx) {
   localStorage.setItem('fv_sessions_d' + di, JSON.stringify(sessions));
 }
 
+function editSessionDate(di, idx, newDate) {
+  const sessions = getSessions(di);
+  if (!newDate) return;
+  if (sessions.includes(newDate) && sessions[idx] !== newDate) {
+    alert('Hai già una sessione registrata in quella data.');
+    return;
+  }
+  sessions[idx] = newDate;
+  sessions.sort();
+  localStorage.setItem('fv_sessions_d' + di, JSON.stringify(sessions));
+  renderDay(di);
+  renderNav();
+}
+
 function currentWeekLabel(di) {
   const n = getSessions(di).length;
   if (n === 0) return null;
-  // Map session count to week pair: 1-2 = W1, 3-4 = W2 etc. (each pair of sessions = 1 week pair block)
   const wk = Math.ceil(n / 2);
   const clamp = Math.min(wk, 4);
   return ['W1–2','W3–4','W5–6','W7–8'][clamp - 1];
@@ -849,11 +1170,11 @@ function daysAgo(isoStr) {
   const diff = Math.round((new Date(todayISO()) - new Date(isoStr)) / 86400000);
   if (diff === 0) return 'oggi';
   if (diff === 1) return 'ieri';
-  return diff + ' giorni fa';
+  if (diff < 0) return 'futuro';
+  return diff + ' gg fa';
 }
 
 function weekLabelForIndex(n) {
-  // n = 1-indexed session number, cycles every 8
   const pos = ((n - 1) % MAX_WEEKS) + 1;
   const wk = Math.ceil(pos / 2);
   return ['W1–2','W3–4','W5–6','W7–8'][wk - 1];
@@ -868,7 +1189,6 @@ function totalSessions() {
 }
 
 function totalDone() {
-  // total possible = 4 days * 8 weeks = 32
   return totalSessions();
 }
 
@@ -876,7 +1196,7 @@ function globalWeekLabel() {
   const total = totalSessions();
   if (total === 0) return null;
   const wk = Math.ceil(total / 4);
-  return wk; // no clamp: shows real week number
+  return wk;
 }
 
 function lastSessionInfo() {
@@ -930,31 +1250,43 @@ function renderCompleteSection(di) {
   const sessions = getSessions(di);
   const n = sessions.length;
   const doneToday = alreadyDoneToday(di);
+  const nextLabel = `Sessione ${n+1} — ${weekLabelForIndex(n+1)}`;
 
-  let btnHTML = '';
-  if (doneToday) {
-    btnHTML = `
-      <button class="complete-btn already" disabled>✓ Segnato oggi — Sessione ${n} (${weekLabelForIndex(n)})</button>
-      <div class="complete-hint">La prossima volta che farai questo allenamento, il pulsante verde riapparirà automaticamente.</div>`;
-  } else {
-    const nextLabel = `Sessione ${n+1} — ${weekLabelForIndex(n+1)}`;
-    btnHTML = `
-      <button class="complete-btn" onclick="markComplete(${di})">✓ Segna allenamento completato</button>
-      <div class="complete-hint">Prossima: <strong>${nextLabel}</strong>. Il pulsante riappare ogni nuovo giorno, per sempre.</div>`;
-  }
+  const datePickerId = `dp_${di}`;
+  const btnHTML = doneToday
+    ? `<button class="complete-btn already" disabled>✓ Segnato — Sessione ${n} (${weekLabelForIndex(n)})</button>
+       <div class="complete-hint">Già registrato per oggi. Il pulsante riappare la prossima volta che apri un giorno diverso.</div>`
+    : `<button class="complete-btn" onclick="markCompleteWithDate(${di},'${datePickerId}')">✓ Segna allenamento completato</button>
+       <div class="complete-date-row">
+         <span class="complete-date-label">📅 Data allenamento:</span>
+         <input class="complete-date-input" type="date" id="${datePickerId}" value="${todayISO()}" max="${todayISO()}">
+       </div>
+       <div class="complete-hint">Prossima: <strong>${nextLabel}</strong> · Cambia la data se l'hai fatto in un giorno precedente.</div>`;
 
   let histHTML = '';
   if (n > 0) {
-    histHTML = `<div class="complete-history-title">Storico sessioni — tocca 🗑 per rimuovere</div>
+    histHTML = `<div class="complete-history-title">Storico — modifica data con ✏️ o rimuovi con 🗑</div>
       <div class="complete-history">
         ${sessions.slice().reverse().map((s, ri) => {
-          const realIdx = n - 1 - ri; // 0-based index in array
-          const sessionNum = n - ri;  // 1-based display
-          return `<div class="hist-row">
+          const realIdx = n - 1 - ri;
+          const sessionNum = n - ri;
+          const editId = `ed_${di}_${realIdx}`;
+          return `<div class="hist-row" id="hr_${di}_${realIdx}">
             <span class="hist-week">${weekLabelForIndex(sessionNum)}</span>
-            <span class="hist-date">${formatDate(s)}</span>
+            <span class="hist-date" id="hd_${di}_${realIdx}">${formatDate(s)}</span>
             <span class="hist-ago">${daysAgo(s)}</span>
+            <button class="hist-date-edit" onclick="toggleEditDate(${di},${realIdx},'${s}')" title="Modifica data">✏️</button>
             <button class="hist-del" onclick="removeSessionUI(${di},${realIdx})" title="Rimuovi">🗑</button>
+          </div>
+          <div id="${editId}" style="display:none; padding:6px 0 8px; border-bottom:1px solid var(--border);">
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+              <input type="date" id="ei_${di}_${realIdx}" value="${s}" max="${todayISO()}"
+                style="flex:1;min-width:130px;height:34px;border:1.5px solid var(--accent);border-radius:var(--r-sm);background:var(--card);color:var(--text);font-size:13px;padding:0 8px;outline:none;">
+              <button onclick="saveEditDate(${di},${realIdx})"
+                style="padding:6px 12px;background:var(--accent);color:white;border:none;border-radius:var(--r-sm);font-size:13px;font-weight:700;cursor:pointer;">Salva</button>
+              <button onclick="toggleEditDate(${di},${realIdx},'${s}')"
+                style="padding:6px 10px;background:transparent;color:var(--text3);border:1.5px solid var(--border2);border-radius:var(--r-sm);font-size:13px;cursor:pointer;">✕</button>
+            </div>
           </div>`;
         }).join('')}
       </div>`;
@@ -970,6 +1302,30 @@ function markComplete(di) {
   addSession(di);
   renderDay(di);
   renderNav();
+}
+
+function markCompleteWithDate(di, inputId) {
+  const input = document.getElementById(inputId);
+  const date = input ? input.value : todayISO();
+  if (!date) { alert('Seleziona una data.'); return; }
+  const sessions = getSessions(di);
+  if (sessions.includes(date)) { alert('Hai già una sessione registrata in quella data.'); return; }
+  addSession(di, date);
+  renderDay(di);
+  renderNav();
+}
+
+function toggleEditDate(di, idx, currentDate) {
+  const editDiv = document.getElementById(`ed_${di}_${idx}`);
+  if (!editDiv) return;
+  const isOpen = editDiv.style.display !== 'none';
+  editDiv.style.display = isOpen ? 'none' : 'block';
+}
+
+function saveEditDate(di, idx) {
+  const input = document.getElementById(`ei_${di}_${idx}`);
+  if (!input || !input.value) return;
+  editSessionDate(di, idx, input.value);
 }
 
 function removeSessionUI(di, idx) {
